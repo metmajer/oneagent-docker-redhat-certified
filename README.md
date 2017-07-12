@@ -19,9 +19,3 @@ docker run -e ONEAGENT_INSTALLER_SCRIPT_URL="$INSTALLER_URL" \
   -v /:/mnt/root \
   "$IMAGE_TAG"
 ```
-
-## Todo
-
-- Validate that the server's certificate holder is Dynatrace
-- Build the image on Red Hat's official 'rhel' base image (MaEt)
-- Replace references to help.dynatrace.com with the accurate link
