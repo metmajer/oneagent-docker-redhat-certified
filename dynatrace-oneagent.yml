@@ -1,0 +1,43 @@
+kind: Template
+apiVersion: v1
+name: dynatrace-oneagent
+labels:
+  template: dynatrace-oneagent
+metadata:
+  name: dynatrace-oneagent
+  annotations:
+    openshift.io/display-name: Dynatrace OneAgent
+    description: Installs Dynatrace OneAgent for all-in-one, full-stack monitoring of OpenShift with Dynatrace. Requires privileged access.
+objects:
+- apiVersion: extensions/v1beta1
+  kind: DaemonSet
+  metadata:
+    name: dynatrace-oneagent
+  spec:
+    template:
+      metadata:
+        labels:
+          name: dynatrace-oneagent
+      spec:
+        containers:
+        - name: dynatrace-oneagent
+          image: dynatrace/oneagent:latest
+          env:
+            ONEAGENT_INSTALLER_SCRIPT_URL: "${ONEAGENT_INSTALLER_SCRIPT_URL}"
+          volumeMounts:
+          - name: host-root
+            mountPath: /mnt/root
+          securityContext:
+            privileged: true
+        volumes:
+        - name: host-root
+          hostPath:
+            path: /
+        hostIPC: true
+        hostNetwork: true
+        hostPID: true
+        serviceAccountName: dynatrace
+parameters:
+- name: ONEAGENT_INSTALLER_SCRIPT_URL
+  description: A URL that points to your cluster's agent download location (to be obtained via "Deploy Dynatrace" in the Dynatrace UI). Example: https://abc123.live.dynatrace.com/installer/oneagent/unix/latest/AbCdEfGhIjKlMnOp.
+  required: true
