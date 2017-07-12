@@ -26,6 +26,7 @@ EXIT_CODE_ERROR=1
 PATH=/usr/sbin:/usr/bin:/sbin:/bin:${PATH}
 DOCKER_INSTALLER_SCRIPT_URL="${ONEAGENT_INSTALLER_SCRIPT_URL}"
 DOCKER_INSTALLER_SCRIPT_NAME=Dynatrace-OneAgent-Linux.sh
+DOCKER_INSTALLER_ROOT_CA_PATH=/tmp/dt-root.cert.pem
 DOCKER_INSTALLER_PATH="/tmp/${DOCKER_INSTALLER_SCRIPT_NAME}"
 INSTALLER_PATH_ON_HOST="${INSTALL_PATH}/${DOCKER_INSTALLER_SCRIPT_NAME}"
 
@@ -282,26 +283,33 @@ runAgents() {
 	finishWithExitCode "${EXIT_CODE_ERROR}"
 }
 
-downloadAgentInstaller() {
+downloadAndVerifyAgentInstaller() {
 	local SRC="${DOCKER_INSTALLER_SCRIPT_URL}"
 	local DST="${DOCKER_INSTALLER_PATH}"
 
-	# Test which of the following commands is available.
-	local cmd=
-	if validateCommandExists 'curl'; then
-		cmd='curl -sSL'
-	elif validateCommandExists 'wget'; then
-		cmd='wget -qO-'
-	else
-		toConsoleError "Cannot download agent: neither curl nor wget are installed. Setup won't continue."
+	toConsoleInfo "Deploying agent to ${DST} via ${SRC}"
+	toLogInfo "Executing: wget -O- ${SRC} > ${DST}"
+	wget -O- "${SRC}" > "${DST}"
+	if [ ! $? -eq 0 ]; then
+		if [ $? -eq 5 ]; then
+			toConsoleError "Failed to verify SSL certificate: ${SRC}. Setup won't continue."
+		else
+			toConsoleError "Cannot execute: wget -O- ${SRC} > ${DST}. Setup won't continue."
+		fi
+
 		finishWithExitCode "${EXIT_CODE_ERROR}"
 	fi
 
-	toConsoleInfo "Deploying agent to ${DST} via ${SRC}"
-	toLogInfo "Executing: exec ${cmd} ${SRC} > ${DST}"
-	$cmd "${SRC}" > "${DST}"
+	toConsoleInfo "Validating agent installer in ${DST}"
+	toLogInfo "Executing: ( echo 'Content-Type: multipart/signed; protocol=\"application/x-pkcs7-signature\"; micalg=\"sha-256\"; boundary=\"--SIGNED-INSTALLER\"'; echo ; echo ; echo '----SIGNED-INSTALLER' ; cat ${DST} ) | openssl cms -verify -CAfile ${DOCKER_INSTALLER_ROOT_CA_PATH} > /dev/null"
+	( echo 'Content-Type: multipart/signed; protocol="application/x-pkcs7-signature"; micalg="sha-256"; boundary="--SIGNED-INSTALLER"'; echo ; echo ; echo '----SIGNED-INSTALLER' ; cat "${DST}" ) | openssl cms -verify -CAfile "${DOCKER_INSTALLER_ROOT_CA_PATH}" > /dev/null
 	if [ ! $? -eq 0 ]; then
-		toConsoleError "Cannot execute: exec ${cmd} ${SRC} > ${DST}. Setup won't continue."
+		if [ $? -eq 4 ]; then
+			toConsoleError "Failed to validate integrity of agent installer in ${DST}. Setup won't continue."
+		else
+			toConsoleError "Cannot execute: ( echo 'Content-Type: multipart/signed; protocol=\"application/x-pkcs7-signature\"; micalg=\"sha-256\"; boundary=\"--SIGNED-INSTALLER\"'; echo ; echo ; echo '----SIGNED-INSTALLER' ; cat ${DST} ) | openssl cms -verify -CAfile ${DOCKER_INSTALLER_ROOT_CA_PATH} > /dev/null. Setup won't continue."
+		fi
+
 		finishWithExitCode "${EXIT_CODE_ERROR}"
 	fi
 }
@@ -384,7 +392,7 @@ performPreDeploymentChecks() {
 main() {
 	performInitialChecks
 	createLogDirsIfMissing
-	downloadAgentInstaller
+	downloadAndVerifyAgentInstaller
 	initializeLog
 	unmountInjectedDirectories
 	performPreDeploymentChecks

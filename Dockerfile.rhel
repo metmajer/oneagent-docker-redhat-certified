@@ -45,14 +45,16 @@ RUN set -x \
     && curl -o epel-release-latest-7.noarch.rpm -SL https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm --retry 999 --retry-max-time 0 -C - \
     && rpm -ivh epel-release-latest-7.noarch.rpm \
     && rm epel-release-latest-7.noarch.rpm \
-    && yum -y install --setopt=tsflags=nodocs jq \
+    && yum -y install --setopt=tsflags=nodocs jq openssl wget \
     && go-md2man -in help.md -out help.1 \
 ### leave go-md2man installed until after the help file conversion is complete.
     && yum -y remove golang-github-cpuguy83-go-md2man \
     && rm -f help.md \
     && yum clean all
 
+COPY dt-root.cert.pem /tmp/dt-root.cert.pem
 COPY entrypoint.sh /tmp/entrypoint.sh
+
 RUN chmod +x /tmp/entrypoint.sh
 
 ENTRYPOINT ["/tmp/entrypoint.sh"]
