@@ -1,0 +1,1 @@
+# oneagent-docker-redhat-certified
