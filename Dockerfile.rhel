@@ -1,0 +1,58 @@
+FROM registry.access.redhat.com/rhel7
+MAINTAINER Dynatrace
+
+### Atomic Labels
+### The UNINSTALL label by DEFAULT will attempt to delete a container (rm) and image (rmi) if the container NAME is the same as the actual IMAGE
+### NAME is set via -n flag to ALL atomic commands (install,run,stop,uninstall)
+### https://github.com/projectatomic/ContainerApplicationGenericLabels
+LABEL Name="dynatrace/oneagent" \
+      Vendor="Dynatrace" \
+      Version="1.x" \
+      Release="1.x" \
+      Build-date="2017-07-10" \
+      url="https://www.dynatrace.com/" \
+      Architecture="x86_64" \
+      summary="Dynatrace is an all-in-one, zero-config monitoring platform designed by and for cloud natives. It is powered by artificial intelligence that identifies performance problems and pinpoints their root causes in seconds." \
+      description="Dynatrace OneAgent automatically discovers all technologies, services and applications that run on your host." \
+      RUN='docker run -d --privileged \
+      --name ${NAME} \
+      --ipc=host \
+      --net=host \
+      --pid=host \
+      -v /:/mnt/root \
+      $IMAGE' \
+      STOP='docker stop ${NAME} && echo "Container ${NAME} has been stopped"'
+
+### OpenShift labels
+LABEL io.k8s.description="Dynatrace OneAgent automatically discovers all technologies, services and applications that run on your host." \
+      io.k8s.display-name="Dynatrace OneAgent" \
+      io.openshift.tags="Dynatrace,oneagent"
+
+### Atomic Help File
+### Write in Markdown, it will be converted to man format at build time.
+### https://github.com/projectatomic/container-best-practices/blob/master/creating/help.adoc
+COPY help.md /
+
+RUN set -x \
+    && yum clean all \
+    && yum-config-manager --disable \* \
+    && yum-config-manager --enable rhel-7-server-rpms \
+    && yum-config-manager --enable rhel-7-server-optional-rpms \
+    && yum -y update-minimal --security --sec-severity=Important --sec-severity=Critical --setopt=tsflags=nodocs \
+### Add your package needs to this installation line... 
+    && yum -y install --setopt=tsflags=nodocs golang-github-cpuguy83-go-md2man \
+### install non-epel packages before adding EPEL repo to ensure supported bits used as much as possible
+    && curl -o epel-release-latest-7.noarch.rpm -SL https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm --retry 999 --retry-max-time 0 -C - \
+    && rpm -ivh epel-release-latest-7.noarch.rpm \
+    && rm epel-release-latest-7.noarch.rpm \
+    && yum -y install --setopt=tsflags=nodocs jq \
+    && go-md2man -in help.md -out help.1 \
+### leave go-md2man installed until after the help file conversion is complete.
+    && yum -y remove golang-github-cpuguy83-go-md2man \
+    && rm -f help.md \
+    && yum clean all
+
+COPY entrypoint.sh /tmp/entrypoint.sh
+RUN chmod +x /tmp/entrypoint.sh
+
+ENTRYPOINT ["/tmp/entrypoint.sh"]
