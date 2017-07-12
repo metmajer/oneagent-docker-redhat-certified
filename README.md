@@ -45,7 +45,7 @@ docker info
 ```
 git clone https://github.com/Dynatrace/oneagent-docker-redhat-certified.git
 cd oneagent-docker-redhat-certified
-docker build -t "$IMAGE_TAG" -f Dockerfile.rhel .
+docker build --pull -t "$IMAGE_TAG" -f Dockerfile.rhel .
 ```
 
 ### Push
