@@ -289,25 +289,25 @@ downloadAndVerifyAgentInstaller() {
 	local DST="${DOCKER_INSTALLER_PATH}"
 	local SKIP_CERT=""
 	
-	echo ${SRC} | grep ^https://
+	echo "${SRC}" | grep -e '^https://' > /dev/null
 	if [ ! $? -eq 0 ]; then
-                toConsoleError "Setup won't continue. Agent installer can be downloaded only from secure location. Your installer URL should start with 'https' ${SRC}"
-                finishWithExitCode "${EXIT_CODE_ERROR}"
-        fi
+		toConsoleError "Setup won't continue. Agent installer can be downloaded only from secure location. Your installer URL should start with 'https' ${SRC}"
+		finishWithExitCode "${EXIT_CODE_ERROR}"
+	fi
 	
-	echo ${DOCKER_INSTALLER_SKIP_CERTIFICATE_CHECK}	| grep -i true
+	echo "${DOCKER_INSTALLER_SKIP_CERTIFICATE_CHECK}" | grep -i -e '^true$' > /dev/null
 	if [ $? -eq 0 ]; then
 		SKIP_CERT="--no-check-certificate"
 	fi
 	
 	toConsoleInfo "Deploying agent to ${DST} via ${SRC}"
-	toLogInfo "Executing: wget -O- ${SKIP_CERT} ${SRC} > ${DST}"
-	wget -O- "${SKIP_CERT}" "${SRC}" > "${DST}"
+	toLogInfo "Executing: wget ${SKIP_CERT} -O- ${SRC} > ${DST}"
+	wget "${SKIP_CERT}" -O- "${SRC}" > "${DST}"
 	if [ ! $? -eq 0 ]; then
 		if [ $? -eq 5 ]; then
 			toConsoleError "Failed to verify SSL certificate: ${SRC}. Setup won't continue."
 		else
-			toConsoleError "Cannot execute: wget -O- ${SRC} > ${DST}. Setup won't continue."
+			toConsoleError "Cannot execute: wget "${SKIP_CERT}" -O- ${SRC} > ${DST}. Setup won't continue."
 		fi
 
 		finishWithExitCode "${EXIT_CODE_ERROR}"
