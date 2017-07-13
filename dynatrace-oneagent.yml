@@ -23,7 +23,7 @@ objects:
         - name: dynatrace-oneagent
           image: dynatrace/oneagent
           env:
-          - name: "ONEAGENT_INSTALLER_SCRIPT_URL"
+          - name: ONEAGENT_INSTALLER_SCRIPT_URL
             value: "${ONEAGENT_INSTALLER_SCRIPT_URL}"
           volumeMounts:
           - name: host-root
