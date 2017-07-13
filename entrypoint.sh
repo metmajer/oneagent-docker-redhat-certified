@@ -379,7 +379,7 @@ performInitialChecks() {
 
 	if [ -z "${ONEAGENT_INSTALLER_SCRIPT_URL+x}" ]; then
 		onlyToConsole "The ONEAGENT_INSTALLER_SCRIPT_URL environment variable must be initialized with your cluster's agent download location (to be obtained via \"Deploy Dynatrace\" in the Dynatrace UI). Example: https://abc123.live.dynatrace.com/installer/oneagent/unix/latest/AbCdEfGhIjKlMnOp."
-		onlyToConsole "If you are not sure how to launch the container please visit: https://help.dynatrace.com/monitor-cloud-virtualization-and-hosts/hosts/how-do-i-deploy-dynatrace-as-docker-container/"
+		onlyToConsole "If you are not sure how to launch the container please visit: https://help.dynatrace.com/infrastructure-monitoring/containers/how-do-i-run-oneagent-with-openshift/"
 		exit "${EXIT_CODE_ERROR}"
 	fi
 
