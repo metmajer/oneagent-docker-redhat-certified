@@ -21,9 +21,10 @@ objects:
       spec:
         containers:
         - name: dynatrace-oneagent
-          image: dynatrace/oneagent:latest
+          image: dynatrace/oneagent
           env:
-            ONEAGENT_INSTALLER_SCRIPT_URL: "${ONEAGENT_INSTALLER_SCRIPT_URL}"
+          - name: ONEAGENT_INSTALLER_SCRIPT_URL
+            value: "${ONEAGENT_INSTALLER_SCRIPT_URL}"
           volumeMounts:
           - name: host-root
             mountPath: /mnt/root
