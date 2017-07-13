@@ -41,7 +41,6 @@ objects:
         hostPID: true
         serviceAccountName: dynatrace
 parameters:
-ONEAGENT_INSTALLER_SKIP_CERTIFICATE_CHECK
 - name: ONEAGENT_INSTALLER_SCRIPT_URL
   description: "A URL that points to your cluster's agent download location (to be obtained via \"Deploy Dynatrace\" in the Dynatrace UI). Example: https://abc123.live.dynatrace.com/installer/oneagent/unix/latest/AbCdEfGhIjKlMnOp."
   required: true
