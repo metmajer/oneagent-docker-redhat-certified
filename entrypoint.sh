@@ -29,6 +29,7 @@ DOCKER_INSTALLER_SCRIPT_NAME=Dynatrace-OneAgent-Linux.sh
 DOCKER_INSTALLER_ROOT_CA_PATH=/tmp/dt-root.cert.pem
 DOCKER_INSTALLER_PATH="/tmp/${DOCKER_INSTALLER_SCRIPT_NAME}"
 INSTALLER_PATH_ON_HOST="${INSTALL_PATH}/${DOCKER_INSTALLER_SCRIPT_NAME}"
+DOCKER_INSTALLER_SKIP_CERTIFICATE_CHECK="${ONEAGENT_INSTALLER_SKIP_CERTIFICATE_CHECK}"
 
 readonly AGENT_INIT_SCRIPT="${AGENT_INSTALL_PATH}/initscripts/oneagent"
 
@@ -286,10 +287,22 @@ runAgents() {
 downloadAndVerifyAgentInstaller() {
 	local SRC="${DOCKER_INSTALLER_SCRIPT_URL}"
 	local DST="${DOCKER_INSTALLER_PATH}"
-
+	local SKIP_CERT=""
+	
+	echo ${SRC} | grep ^https://
+	if [ ! $? -eq 0 ]; then
+                toConsoleError "Setup won't continue. Agent installer can be downloaded only from secure location. Your installer URL should start with 'https' ${SRC}"
+                finishWithExitCode "${EXIT_CODE_ERROR}"
+        fi
+	
+	echo ${DOCKER_INSTALLER_SKIP_CERTIFICATE_CHECK}	| grep -i true
+	if [ $? -eq 0 ]; then
+		SKIP_CERT="--no-check-certificate"
+	fi
+	
 	toConsoleInfo "Deploying agent to ${DST} via ${SRC}"
-	toLogInfo "Executing: wget -O- ${SRC} > ${DST}"
-	wget -O- "${SRC}" > "${DST}"
+	toLogInfo "Executing: wget -O- ${SKIP_CERT} ${SRC} > ${DST}"
+	wget -O- "${SKIP_CERT}" "${SRC}" > "${DST}"
 	if [ ! $? -eq 0 ]; then
 		if [ $? -eq 5 ]; then
 			toConsoleError "Failed to verify SSL certificate: ${SRC}. Setup won't continue."
