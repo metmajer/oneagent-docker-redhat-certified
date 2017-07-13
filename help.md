@@ -3,7 +3,7 @@
  
 # DESCRIPTION
  
-The `dynatrace/oneagent` image provides the Dynatrace OneAgent component of the [Dynatrace SaaS and Managed](https://www.dynatrace.com/technologies/cloud-and-microservices/docker-monitoring/) platform for all-in-one, real user experience and full-stack application and container monitoring. Please find detailed information in our [online help](https://help.dynatrace.com/monitor-cloud-virtualization-and-hosts/hosts/how-do-i-deploy-dynatrace-as-docker-container/).
+The `dynatrace/oneagent` image provides the Dynatrace OneAgent component of the [Dynatrace SaaS and Managed](https://www.dynatrace.com/technologies/cloud-and-microservices/docker-monitoring/) platform for all-in-one, real user experience and full-stack application and container monitoring. Please find detailed information in our [online help](https://help.dynatrace.com/infrastructure-monitoring/containers/how-do-i-run-oneagent-with-openshift/).
  
 # USAGE
  
