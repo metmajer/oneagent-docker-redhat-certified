@@ -26,6 +26,19 @@ docker run -e ONEAGENT_INSTALLER_SCRIPT_URL="$INSTALLER_URL" \
 
 ...or use the `dynatrace-oneagent.yml` OpenShift template file.
 
+If you are runnig OneAgent installer from Managed cluster and you don't have valid SSL certificate deployed on your cluster then you can disable certificate checking otherwise installation will fail.
+
+```
+docker run -e ONEAGENT_INSTALLER_SCRIPT_URL="$INSTALLER_URL" \
+  -e ONEAGENT_INSTALLER_SKIP_CERTIFICATE_CHECK=true \
+  --privileged=true \
+  --pid=host \
+  --net=host \
+  --ipc=host \
+  -v /:/mnt/root \
+  "$IMAGE_TAG"
+```
+
 ## RHEL
 
 ### Prerequisites
