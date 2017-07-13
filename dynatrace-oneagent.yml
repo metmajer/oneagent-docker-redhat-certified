@@ -46,5 +46,5 @@ parameters:
   required: true
 - name: ONEAGENT_INSTALLER_SKIP_CERTIFICATE_CHECK
   description: "Must be true if the SSL certificate check upon agent download shall be omitted, otherwise false (default)."
-  value: false
+  value: "false"
   required: false
