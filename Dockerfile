@@ -30,9 +30,9 @@ RUN set -x \
     && rpm -ivh epel-release-latest-7.noarch.rpm && rm epel-release-latest-7.noarch.rpm \
     && yum -y install --disablerepo "*" --enablerepo ${REPOLIST} --setopt=tsflags=nodocs \
       golang-github-cpuguy83-go-md2man jq openssl wget \
-    && go-md2man -in help.md -out help.1 \
+    && go-md2man -in /tmp/help.md -out /help.1 \
     && yum -y remove golang-github-cpuguy83-go-md2man \
-    && rm -f help.md \
+    && rm -f /tmp/help.md \
     && yum clean all
 
 COPY dt-root.cert.pem /tmp/dt-root.cert.pem
