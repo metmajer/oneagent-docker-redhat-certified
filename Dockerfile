@@ -9,7 +9,7 @@ LABEL name="dynatrace/oneagent" \
       summary="Dynatrace is an all-in-one, zero-config monitoring platform designed by and for cloud natives. It is powered by artificial intelligence that identifies performance problems and pinpoints their root causes in seconds." \
       description="Dynatrace OneAgent automatically discovers all technologies, services and applications that run on your host." \
       url="https://www.dynatrace.com/" \
-      run='docker run -d --privileged --name ${NAME} --ipc=host --net=host --pid=host -v /:/mnt/root $IMAGE'
+      run='docker run -d --privileged --name ${NAME} --ipc=host --net=host --pid=host -v /:/mnt/root ${IMAGE}'
 
 ### OpenShift labels
 LABEL io.k8s.description="Dynatrace OneAgent automatically discovers all technologies, services and applications that run on your host." \

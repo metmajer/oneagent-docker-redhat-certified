@@ -3,7 +3,7 @@
 
 # DESCRIPTION
 
-The `dynatrace/oneagent` image provides the Dynatrace OneAgent component of the [Dynatrace SaaS and Managed](https://www.dynatrace.com/technologies/cloud-and-microservices/docker-monitoring/) platform for all-in-one, real user experience and full-stack application and container monitoring. Please find detailed information in our [online help](https://help.dynatrace.com/infrastructure-monitoring/containers/how-do-i-run-oneagent-with-openshift/).
+The `dynatrace/oneagent` image provides the Dynatrace OneAgent component of the [Dynatrace](https://www.dynatrace.com) platform for all-in-one, real user experience and full-stack application and container monitoring. Please find detailed information in the [Dynatrace Help](https://help.dynatrace.com).
 
 # USAGE
 
@@ -12,8 +12,8 @@ The `dynatrace/oneagent` image is designed to be run by the atomic `run` command
 ```
 atomic run dynatrace/oneagent
 ```
-
-This starts the container with selected privileges to the host and with the root directory bind mounted inside the container to install Dynatrace OneAgent on the host.
+ 
+This starts the container with selected privileges to the host and with the root directory bind mounted inside the container to install Dynatrace OneAgent on the host. Be sure to replace `${INSTALLER_URL}` with the download URL provided through the Dynatrace UI, as described in our help section on ["How do I monitor OpenShift Container Platform?"](https://help.dynatrace.com/infrastructure-monitoring/containers/how-do-i-monitor-openshift-container-platform/).
 
 # LABELS
 
@@ -21,15 +21,15 @@ The `dynatrace/onagent` container includes the following LABEL settings:
 
 That atomic command runs the docker command set in this label:
 
-`RUN`=docker run -d --privileged --name NAME --ipc=host --net=host --pid=host -v /:/mnt/root IMAGE
+`RUN`=docker run -d --privileged --name ${NAME} --ipc=host --net=host --pid=host -v /:/mnt/root ${IMAGE}
 
-The contents of the RUN label tells an `atomic run dynatrace/oneagent` command to open various privileges to the host (described later), mount the root directory into the container, set the name of the container and run the Dynatrace OneAgent installation.
+The contents of the RUN label tells an `atomic run registry.connect.redhat.com/dynatrace/oneagent` command to open various privileges to the host (described later), mount the root directory into the container, set the name of the container and run the Dynatrace OneAgent installation.
 
 `Name=`dynatrace/oneagent
 
-`Release=`1.x
-
 `Version=`1.x
+
+`Release=`1
 
 `Build-date=`2017-07-14
 
