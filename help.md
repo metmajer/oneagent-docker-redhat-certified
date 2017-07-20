@@ -10,10 +10,11 @@ The `dynatrace/oneagent` image provides the Dynatrace OneAgent component of the 
 The `dynatrace/oneagent` image is designed to be run by the atomic `run` command:
 
 ```
-atomic run dynatrace/oneagent
+export ONEAGENT_INSTALLER_SCRIPT_URL="[installer-script-url]"
+atomic run registry.connect.redhat.com/dynatrace/oneagent
 ```
  
-This starts the container with selected privileges to the host and with the root directory bind mounted inside the container to install Dynatrace OneAgent on the host. Be sure to replace `${INSTALLER_URL}` with the download URL provided through the Dynatrace UI, as described in our help section on ["How do I monitor OpenShift Container Platform?"](https://help.dynatrace.com/infrastructure-monitoring/containers/how-do-i-monitor-openshift-container-platform/).
+This starts the container with selected privileges to the host and with the root directory bind mounted inside the container to install Dynatrace OneAgent on the host. Be sure to replace `[installer-script-url]` with the download URL provided through the Dynatrace UI, as described in our help section on ["How do I monitor OpenShift Container Platform?"](https://help.dynatrace.com/infrastructure-monitoring/containers/how-do-i-monitor-openshift-container-platform/).
 
 # LABELS
 
@@ -21,7 +22,7 @@ The `dynatrace/onagent` container includes the following LABEL settings:
 
 That atomic command runs the docker command set in this label:
 
-`RUN`=docker run -d --privileged --name ${NAME} --ipc=host --net=host --pid=host -v /:/mnt/root ${IMAGE}
+`RUN`=docker run -d --privileged --name ${NAME} -e ONEAGENT_INSTALLER_SCRIPT_URL="${ONEAGENT_INSTALLER_SCRIPT_URL" -e ONEAGENT_INSTALLER_SKIP_CERT_CHECK="${ONEAGENT_INSTALLER_SKIP_CERT_CHECK:-false}" --ipc=host --net=host --pid=host -v /:/mnt/root ${IMAGE}
 
 The contents of the RUN label tells an `atomic run registry.connect.redhat.com/dynatrace/oneagent` command to open various privileges to the host (described later), mount the root directory into the container, set the name of the container and run the Dynatrace OneAgent installation.
 
