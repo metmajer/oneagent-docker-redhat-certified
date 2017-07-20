@@ -25,8 +25,8 @@ objects:
           env:
           - name: ONEAGENT_INSTALLER_SCRIPT_URL
             value: "${ONEAGENT_INSTALLER_SCRIPT_URL}"
-          - name: ONEAGENT_INSTALLER_SKIP_CERTIFICATE_CHECK
-            value: "${ONEAGENT_INSTALLER_SKIP_CERTIFICATE_CHECK}"
+          - name: ONEAGENT_INSTALLER_SKIP_CERT_CHECK
+            value: "${ONEAGENT_INSTALLER_SKIP_CERT_CHECK}"
           volumeMounts:
           - name: host-root
             mountPath: /mnt/root
@@ -44,7 +44,7 @@ parameters:
 - name: ONEAGENT_INSTALLER_SCRIPT_URL
   description: "A URL that points to your cluster's agent download location (to be obtained via \"Deploy Dynatrace\" in the Dynatrace UI). Example: https://abc123.live.dynatrace.com/installer/oneagent/unix/latest/AbCdEfGhIjKlMnOp."
   required: true
-- name: ONEAGENT_INSTALLER_SKIP_CERTIFICATE_CHECK
-  description: "Must be true if the SSL certificate check upon agent download shall be omitted, otherwise false (default)."
+- name: ONEAGENT_INSTALLER_SKIP_CERT_CHECK
+  description: "Must be true if the server certificate check upon agent download shall be omitted, otherwise false (default)."
   value: "false"
   required: false

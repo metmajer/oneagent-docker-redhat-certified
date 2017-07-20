@@ -29,7 +29,7 @@ DOCKER_INSTALLER_SCRIPT_NAME=Dynatrace-OneAgent-Linux.sh
 DOCKER_INSTALLER_ROOT_CA_PATH=/tmp/dt-root.cert.pem
 DOCKER_INSTALLER_PATH="/tmp/${DOCKER_INSTALLER_SCRIPT_NAME}"
 INSTALLER_PATH_ON_HOST="${INSTALL_PATH}/${DOCKER_INSTALLER_SCRIPT_NAME}"
-DOCKER_INSTALLER_SKIP_CERTIFICATE_CHECK="${ONEAGENT_INSTALLER_SKIP_CERTIFICATE_CHECK}"
+DOCKER_INSTALLER_SKIP_CERT_CHECK="${ONEAGENT_INSTALLER_SKIP_CERT_CHECK}"
 
 readonly AGENT_INIT_SCRIPT="${AGENT_INSTALL_PATH}/initscripts/oneagent"
 
@@ -295,7 +295,7 @@ downloadAndVerifyAgentInstaller() {
 		finishWithExitCode "${EXIT_CODE_ERROR}"
 	fi
 	
-	echo "${DOCKER_INSTALLER_SKIP_CERTIFICATE_CHECK}" | grep -i -e '^true$' > /dev/null
+	echo "${DOCKER_INSTALLER_SKIP_CERT_CHECK}" | grep -i -e '^true$' > /dev/null
 	if [ $? -eq 0 ]; then
 		SKIP_CERT="--no-check-certificate"
 	fi
