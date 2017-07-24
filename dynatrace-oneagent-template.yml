@@ -22,6 +22,7 @@ objects:
         containers:
         - name: dynatrace-oneagent
           image: registry.connect.redhat.com/dynatrace/oneagent
+          imagePullPolicy: always
           env:
           - name: ONEAGENT_INSTALLER_SCRIPT_URL
             value: "${ONEAGENT_INSTALLER_SCRIPT_URL}"
