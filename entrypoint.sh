@@ -301,13 +301,13 @@ downloadAndVerifyAgentInstaller() {
 	fi
 	
 	toConsoleInfo "Deploying agent to ${DST} via ${SRC}"
-	toLogInfo "Executing: wget ${SKIP_CERT} -O- ${SRC} > ${DST}"
-	wget "${SKIP_CERT}" -O- "${SRC}" > "${DST}"
+	toLogInfo "Executing: wget ${SKIP_CERT} -O ${DST} ${SRC}"
+	wget ${SKIP_CERT} -O "${DST}" "${SRC}"
 	if [ ! $? -eq 0 ]; then
 		if [ $? -eq 5 ]; then
 			toConsoleError "Failed to verify SSL certificate: ${SRC}. Setup won't continue."
 		else
-			toConsoleError "Cannot execute: wget "${SKIP_CERT}" -O- ${SRC} > ${DST}. Setup won't continue."
+			toConsoleError "Cannot execute: wget "${SKIP_CERT}" -O ${DST} ${SRC}. Setup won't continue."
 		fi
 
 		finishWithExitCode "${EXIT_CODE_ERROR}"
