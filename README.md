@@ -1,66 +1,26 @@
-# oneagent-docker-redhat-certified
+# Dynatrace OneAgent in Docker for the Red Hat Container Catalog
 
-This is a temporary repository to collaborate on the OneAgent Docker Image for the Red Hat Certified Container Technology partnership.
+This repository contains build files and basic documentation on building and shipping a Dynatrace OneAgent Docker image for the [Red Hat Container Catalog (RHCC)](). For detailed instructions on how to run this image on [OpenShift Container Platform](https://www.openshift.com/container-platform/), please have a look at [help.dynatrace.com](https://help.dynatrace.com/infrastructure-monitoring/containers/how-do-i-monitor-openshift-container-platform/).
 
-The Debian instructions below are good enough for a quick test build. The RHEL build below that is subject to certification needs to be built on a RHEL machine with a valid Red Hat subscription.
+## Prerequisites
 
-## Debian
-
-### Build
+The Docker image is based on the official `registry.access.redhat.com/rhel7` Docker image and has to be built on a RHEL 7 host. To install `docker` on this host, do:
 
 ```
-docker build -t $IMAGE_TAG .
+sudo subscription-manager repos --enable=rhel-7-server-rpms --enable=rhel-7-server-extras-rpms
+sudo yum install docker
+sudo systemctl enable docker
+sudo systemctl start docker
 ```
 
-### Run
-
-```
-docker run -e ONEAGENT_INSTALLER_SCRIPT_URL="$INSTALLER_URL" \
-  --privileged=true \
-  --pid=host \
-  --net=host \
-  --ipc=host \
-  -v /:/mnt/root \
-  "$IMAGE_TAG"
-```
-
-...or use the `dynatrace-oneagent.yml` OpenShift template file.
-
-If you are runnig OneAgent installer from Managed cluster and you don't have valid SSL certificate deployed on your cluster then you can disable certificate checking otherwise installation will fail.
-
-```
-docker run -e ONEAGENT_INSTALLER_SCRIPT_URL="$INSTALLER_URL" \
-  -e ONEAGENT_INSTALLER_SKIP_CERTIFICATE_CHECK=true \
-  --privileged=true \
-  --pid=host \
-  --net=host \
-  --ipc=host \
-  -v /:/mnt/root \
-  "$IMAGE_TAG"
-```
-
-## RHEL
-
-### Prerequisites
-
-Start with spinning up a RHEL 7.3 VM instance using [https://opennebula.lab.dynatrace.org](OpenNebula). Then, as root user, do:
-
-```
-subscription-manager repos --enable=rhel-7-server-rpms --enable=rhel-7-server-extras-rpms
-yum install docker
-systemctl enable docker
-systemctl start docker
-docker info
-```
-
-### Build
+## Build
 
 ```
 git clone https://github.com/Dynatrace/oneagent-docker-redhat-certified.git
 cd oneagent-docker-redhat-certified
-docker build --pull -t "$IMAGE_TAG" -f Dockerfile.rhel .
+docker build -t dynatrace/oneagent .
 ```
 
-### Push
+## Ship
 
-tbd.
+Then, follow the instructions under the *Upload Your Image* section in the *Dynatrace OneAgent* project of the [Red Hat Container Zone](https://connect.redhat.com/zones/containers) (login required).
