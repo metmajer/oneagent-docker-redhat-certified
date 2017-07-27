@@ -18,7 +18,7 @@ sudo systemctl start docker
 ```
 git clone https://github.com/Dynatrace/oneagent-docker-redhat-certified.git
 cd oneagent-docker-redhat-certified
-docker build -t dynatrace/oneagent .
+sudo docker build -t dynatrace/oneagent .
 ```
 
 ## Ship
